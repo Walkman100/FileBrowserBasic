@@ -1,21 +1,15 @@
 ﻿Public Class FileBrowser
-'    Dim Dir As String = Environment.GetEnvironmentVariable("USERPROFILE") & "\Documents\GitHub\"
+    Dim WorkingDir As String = Environment.GetEnvironmentVariable("USERPROFILE")
 '    Dim cmdRepo As String = ""
 '    Dim count, GitCommand As String  ' because the Worker doesn't support direct sub calling
 '    Dim ExitWhenDone As Boolean = False
 '    Dim LineIsOrigin, LineIsUpstream, notInserted As Boolean
 '    Dim PSFiles() As String = {"CheckVersion.ps1", "GitPrompt.ps1", "GitTabExpansion.ps1", "GitUtils.ps1", "TortoiseGit.ps1", "Utils.ps1", "posh-git.psm1", "profile.example.ps1"}
-'
+
 '    Dim CmdStyle As AppWinStyle  ' window location of CMD
 '    Dim Wait As Integer  ' Wait until cmd closes
-'
-'    'Friend Shared TaskbarProgress As New TaskbarItemInfo
-'
-'    Private Sub btnExit_Click(sender As Object, e As EventArgs) Handles btnExit.Click
-'        Application.Exit()
-'    End Sub
-'
-'    Sub LoadGitUpdater(sender As Object, e As EventArgs) Handles MyBase.Load
+
+    Sub FileBrowser(sender As Object, e As EventArgs) Handles MyBase.Load
 '        If Not File.Exists("GitUpdater.bat") Then
 '            Try
 '                My.Computer.Network.DownloadFile("https://raw.githubusercontent.com/Walkman100/GitUpdater/master/GitUpdater.bat", "GitUpdater.bat")
@@ -36,7 +30,7 @@
 '        btnGitPushNotSelected.Enabled = True
 '        btnCD.Enabled = True
 '        btnCancel.Enabled = False
-'        ' apply settings to where they are changed
+        ' apply settings to where they are changed
 '        txtUsername.Text = My.Settings.Username
 '        txtPassword.Text = My.Settings.Password
 '        chkNoWait.Checked = My.Settings.NoWait
@@ -48,12 +42,12 @@
 '        If txtLogPath.Text = "" Then txtLogPath.Text = Dir & "GitUpdater.log"
 '        chkOpenLog.Checked = My.Settings.OpenLog
 '        chkShowErrors.Checked = My.Settings.ShowErrors
-'
-'        ' apply settings to where they affect
-'        If My.Settings.SavedDir <> "" Then
-'            Dir = My.Settings.SavedDir
-'        End If
-'        RebuildRepoList()
+
+        ' apply settings to where they affect
+        If My.Settings.LastDir <> "" Then
+            WorkingDir = My.Settings.LastDir
+        End If
+        RebuildRepoList()
 '        If My.Settings.NoWait = True Then Wait = 1000 Else Wait = -1
 '        If My.Settings.DontShow = True Then
 '            CmdStyle = vbMinimizedNoFocus
@@ -67,89 +61,56 @@
 '            End If
 '        End If
 '
-'        ' command line args
-'        For Each s As String In My.Application.CommandLineArgs
-'            If s.ToLower.StartsWith("-gitcmd=") Then
-'                GitCommand = s.Remove(0, 8)
-'            End If
-'            If s.ToLower.StartsWith("-gitwhat=") Then
-'                count = s.Remove(0, 9)
-'            End If
-'            If s.ToLower.StartsWith("-dir=") Then
-'                Dir = s.Remove(0, 5)
-'                RebuildRepoList()
-'            End If
-'            If s.ToLower.StartsWith("-repo=") Then
-'                cmdRepo = s.Remove(0, 6)
-'            End If
-'            If s.ToLower.StartsWith("run") Then
-'                If ShellWorker.IsBusy = False Then
-'                    ShellWorker.RunWorkerAsync()
-'                Else
-'                    MsgBox("A script is currently in progress!", MsgBoxStyle.Critical)
-'                End If
-'            End If
-'            If s.ToLower.StartsWith("exitwhendone") Then
-'                ExitWhenDone = True
-'            End If
-'            If s.ToLower.StartsWith("hidegui") Then
-'                Me.WindowState = FormWindowState.Minimized
-'            End If
-'        Next
-'    End Sub
-'
-'    ' to do with list of repos
-'
-'    Sub RebuildRepoList()
-'        btnRefresh.Enabled = False
-'        lstRepos.Items.Clear()
-'        For Each Repo As String In Directory.GetDirectories(Dir)
-'            lstRepos.Items.Add(Mid(Repo, Len(Dir) + 1))
-'        Next
-'        btnRefresh.Enabled = True
-'    End Sub
-'
-'    Sub btnRefresh_Click(sender As Object, e As EventArgs) Handles btnRefresh.Click
-'        If ShellWorker.IsBusy = False Then
-'            RebuildRepoList()
-'        ElseIf MsgBox("A script is currently in progress! Refreshing repos might mess up the script. You can use the cancel button above to cancel operation." _
-'                      & vbNewLine & vbNewLine & "Refresh anyway?", MsgBoxStyle.Critical + MsgBoxStyle.OkCancel, "Operation in progress") = vbOK Then
-'            RebuildRepoList()
-'        End If
-'    End Sub
-'
-'    Sub btnCD_Click(sender As Object, e As EventArgs) Handles btnCD.Click
-'        If ShellWorker.IsBusy = False Then
-'            ' show file chooser dialog, set result as Dir
-'            folderBrowserDialog.SelectedPath = Dir
-'            folderBrowserDialog.ShowDialog()
-'            Dir = folderBrowserDialog.SelectedPath & "\"
-'            My.Settings.SavedDir = Dir
-'
-'            ' rebuild list automatically
-'            RebuildRepoList()
-'        Else
-'            MsgBox("A script is currently in progress! Changing directory will mess up the script. Please cancel using the button above first.", MsgBoxStyle.Critical)
-'        End If
-'    End Sub
-'
-'    Sub LstRepos_DoubleClick(sender As Object, e As EventArgs) Handles lstRepos.DoubleClick, ContextMenuStripReposOpenInExplorer.Click
-'        If lstRepos.SelectedIndex <> -1 Then
-'            Process.Start(Dir & lstRepos.SelectedItem)
-'        Else
-'            Process.Start(Dir)
-'        End If
-'    End Sub
-'
-'    Sub ContextMenuStripReposOpenInCMD_Click(sender As Object, e As EventArgs) Handles ContextMenuStripReposOpenInCMD.Click
+        ' command line args
+        For Each s As String In My.Application.CommandLineArgs
+            If s.ToLower.StartsWith("") Then
+                
+            End If
+        Next
+    End Sub
+
+    ' to do with list of repos
+
+    Sub RebuildRepoList() Handles btnRefresh.click
+        btnRefresh.Enabled = False
+        lstContents.Items.Clear()
+        For Each Dir As String In Directory.GetDirectories(WorkingDir)
+            lstContents.Items.Add(Mid(Dir, Len(WorkingDir) + 1))
+        Next
+        For Each Dir As String In Directory.GetFiles(WorkingDir)
+            lstContents.Items.Add(Mid(Dir, Len(WorkingDir)+1))
+        Next
+        btnRefresh.Enabled = True
+    End Sub
+
+    Sub btnCD_Click(sender As Object, e As EventArgs) Handles btnCD.Click
+        ' show file chooser dialog, set result as WorkingDir
+        folderBrowserDialog.SelectedPath = WorkingDir
+        folderBrowserDialog.ShowDialog()
+        WorkingDir = folderBrowserDialog.SelectedPath & "\"
+        My.Settings.LastDir = WorkingDir
+
+        ' rebuild list automatically
+        RebuildRepoList()
+    End Sub
+
+    Sub ContextMenuStripReposOpenInExplorer_Click(sender As Object, e As EventArgs) Handles ContextMenuStripReposOpenInExplorer.Click
+        If lstContents.SelectedIndex <> -1 Then
+            Process.Start(WorkingDir & lstContents.SelectedItem)
+        Else
+            Process.Start(WorkingDir)
+        End If
+    End Sub
+
+    Sub ContextMenuStripReposOpenInCMD_Click(sender As Object, e As EventArgs) Handles ContextMenuStripReposOpenInCMD.Click
 '        If lstRepos.SelectedIndex <> -1 Then
 '            Process.Start("cmd.exe", "/k cd " & Dir & lstRepos.SelectedItem)
 '        Else
 '            Process.Start("cmd.exe", "/k cd " & Dir)
 '        End If
-'    End Sub
-'
-'    Sub ContextMenuStripReposOpenInPS_Click(sender As Object, e As EventArgs) Handles ContextMenuStripReposOpenInPS.Click
+    End Sub
+
+    Sub ContextMenuStripReposOpenInPS_Click(sender As Object, e As EventArgs) Handles ContextMenuStripReposOpenInPS.Click
 '        If Not File.Exists("PS\CheckVersion.ps1") Or Not File.Exists("PS\GitPrompt.ps1") Or Not File.Exists("PS\GitTabExpansion.ps1") Or Not File.Exists("PS\GitUtils.ps1") Or Not _
 '         File.Exists("PS\TortoiseGit.ps1") Or Not File.Exists("PS\Utils.ps1") Or Not File.Exists("PS\posh-git.psm1") Or Not File.Exists("PS\profile.example.ps1") Or Not File.Exists("OpenRepoInPS.bat") Then
 '
@@ -211,17 +172,17 @@
 '                Process.Start("OpenRepoInPS.bat", """" & Dir & """ " & Environment.CurrentDirectory)
 '            End If
 '        End If
-'    End Sub
-'    
-'    Sub ContextMenuStripReposOpenInBash_Click(sender As Object, e As EventArgs) Handles ContextMenuStripReposOpenInBash.Click
+    End Sub
+    
+    Sub ContextMenuStripReposOpenInBash_Click(sender As Object, e As EventArgs) Handles ContextMenuStripReposOpenInBash.Click
 '        If lstRepos.SelectedIndex <> -1 Then
 '            Process.Start("OpenRepoInBash.bat", """" & Dir & lstRepos.SelectedItem & """")
 '        Else
 '            Process.Start("OpenRepoInBash.bat", """" & Dir & """")
 '        End If
-'    End Sub
-'
-'    Sub ContextMenuStripReposOpenInGitHub_Click(sender As Object, e As EventArgs) Handles ContextMenuStripReposOpenInGitHub.Click
+    End Sub
+
+    Sub ContextMenuStripReposOpenInGitHub_Click(sender As Object, e As EventArgs) Handles ContextMenuStripReposOpenInGitHub.Click
 '        If lstRepos.SelectedIndex <> -1 Then
 '            Try
 '                Process.Start("github-windows://openRepo/" & Dir & lstRepos.SelectedItem)
@@ -297,9 +258,9 @@
 '                    "With filename: readme.md, readme.txt, readme.htm, readme.html, readme.markdown, readme.mkd, or readme.", MsgBoxStyle.Critical)
 '            End If
 '        End If
-'    End Sub
-'
-'    Sub ContextMenuStripReposOpenSLN_Click(sender As Object, e As EventArgs) Handles ContextMenuStripReposOpenSLN.Click
+    End Sub
+
+    Sub ContextMenuStripReposOpenSLN_Click(sender As Object, e As EventArgs) Handles ContextMenuStripReposOpenSLN.Click
 '        If lstRepos.SelectedIndex <> -1 Then
 '            If File.Exists(Dir & lstRepos.SelectedItem & "\" & lstRepos.SelectedItem & ".sln") Then
 '                Process.Start(Dir & lstRepos.SelectedItem & "\" & lstRepos.SelectedItem & ".sln")
@@ -324,9 +285,9 @@
 '                    """" & Dir & ".sln""", MsgBoxStyle.Critical)
 '            End If
 '        End If
-'    End Sub
-'
-'    Private Sub ContextMenuStripReposOpenURL_Click(sender As Object, e As EventArgs) Handles ContextMenuStripReposOpenURL.Click
+    End Sub
+
+    Private Sub ContextMenuStripReposOpenURL_Click(sender As Object, e As EventArgs) Handles ContextMenuStripReposOpenURL.Click
 '        LineIsOrigin = False
 '        LineIsUpstream = False
 '
@@ -369,9 +330,9 @@
 '                LineIsUpstream = True
 '            End If
 '        Next
-'    End Sub
-'
-'    Sub ContextMenuStripReposCopyRepoName_Click(sender As Object, e As EventArgs) Handles ContextMenuStripReposCopyRepoName.Click
+    End Sub
+
+    Sub ContextMenuStripReposCopyRepoName_Click(sender As Object, e As EventArgs) Handles ContextMenuStripReposCopyRepoName.Click
 '        If lstRepos.SelectedIndex <> -1 Then
 '            Try
 '                Clipboard.SetText(lstRepos.SelectedItem, TextDataFormat.UnicodeText)
@@ -387,9 +348,9 @@
 '                MsgBox("Copy failed!" & vbNewLine & "Error: """ & ex.ToString, MsgBoxStyle.Critical & """", "Copy failed!")
 '            End Try
 '        End If
-'    End Sub
-'
-'    Sub ContextMenuStripReposCopyRepoPath_Click(sender As Object, e As EventArgs) Handles ContextMenuStripReposCopyRepoPath.Click
+    End Sub
+
+    Sub ContextMenuStripReposCopyRepoPath_Click(sender As Object, e As EventArgs) Handles ContextMenuStripReposCopyRepoPath.Click
 '        If lstRepos.SelectedIndex <> -1 Then
 '            Try
 '                Clipboard.SetText(Dir & lstRepos.SelectedItem, TextDataFormat.UnicodeText)
@@ -405,487 +366,128 @@
 '                MsgBox("Copy failed!" & vbNewLine & "Error: """ & ex.ToString, MsgBoxStyle.Critical & """", "Copy failed!")
 '            End Try
 '        End If
-'    End Sub
-'
-'    Private Sub ContextMenuStripReposRemoveEntry_Click(sender As Object, e As EventArgs) Handles ContextMenuStripReposRemoveEntry.Click
+    End Sub
+
+    Private Sub ContextMenuStripReposRemoveEntry_Click(sender As Object, e As EventArgs) Handles ContextMenuStripReposRemoveEntry.Click
 '        If lstRepos.SelectedIndex <> -1 Then
 '            lstRepos.Items.RemoveAt(lstRepos.SelectedIndex)
 '        End If
-'    End Sub
-'
-'    Private Sub ContextMenuStripReposCDHere_Click(sender As Object, e As EventArgs) Handles ContextMenuStripReposCDHere.Click
-'        If lstRepos.SelectedIndex <> -1 Then
-'            Dir = Dir & lstRepos.SelectedItem & "\"
-'            My.Settings.SavedDir = Dir
-'            RebuildRepoList()
-'        Else
-'            Try
-'                Dir = Dir.Remove(Dir.Length - 1)
-'                Dir = Dir.Remove(Dir.LastIndexOf("\"))
-'                Dir = Dir & "\"
-'                My.Settings.SavedDir = Dir
-'                RebuildRepoList()
-'            Catch ex As System.ArgumentOutOfRangeException
-'                If MsgBox("Cannot go higher than the root of a drive! Please use the CD button to change drives." & vbNewLine & vbNewLine & "Open CD dialog now?", MsgBoxStyle.YesNo + MsgBoxStyle.Critical, "Trying to go up from a drive root") = vbYes Then
-'                    btnCD_Click(Nothing, Nothing)
-'                End If
-'            End Try
-'        End If
-'    End Sub
-'
-'    ' how to run the shells & changing settings
-'
-'    Sub chkNoWait_CheckedChanged(sender As Object, e As EventArgs) Handles chkNoWait.CheckedChanged
-'        If chkNoWait.Checked = True Then Wait = 1000 Else Wait = -1
-'        My.Settings.NoWait = chkNoWait.Checked
-'        My.Settings.Save()
-'    End Sub
-'
-'    Sub chkDontClose_CheckedChanged(sender As Object, e As EventArgs) Handles chkDontClose.CheckedChanged
-'        My.Settings.DontClose = chkDontClose.Checked
-'        My.Settings.Save()
-'    End Sub
-'
-'    Sub chkDontShow_CheckedChanged(sender As Object, e As EventArgs) Handles chkDontShow.CheckedChanged
-'        If chkDontShow.Checked = True Then
-'            CmdStyle = vbMinimizedNoFocus
-'            If ShellWorker.IsBusy = True Then
-'                Me.TopMost = False
-'            End If
-'        ElseIf chkDontShow.Checked = False Then
-'            CmdStyle = vbNormalFocus
-'            If ShellWorker.IsBusy = True Then
-'                Me.TopMost = True
-'            End If
-'        End If
-'        My.Settings.DontShow = chkDontShow.Checked
-'        My.Settings.Save()
-'    End Sub
-'
-'    Sub chkRepeat_CheckedChanged(sender As Object, e As EventArgs) Handles chkRepeat.CheckedChanged
-'        My.Settings.Repeat = chkRepeat.Checked
-'        My.Settings.Save()
-'    End Sub
-'
-'    Sub chkLog_CheckedChanged(sender As Object, e As EventArgs) Handles chkLog.CheckedChanged
-'        My.Settings.Log = chkLog.Checked
-'        My.Settings.Save()
-'    End Sub
-'
-'    Private Sub txtLogPath_TextChanged(sender As Object, e As EventArgs) Handles txtLogPath.TextChanged
-'        My.Settings.LogPath = txtLogPath.Text
-'        My.Settings.Save()
-'    End Sub
-'
-'    Private Sub chkOpenLog_CheckedChanged(sender As Object, e As EventArgs) Handles chkOpenLog.CheckedChanged
-'        My.Settings.OpenLog = chkOpenLog.Checked
-'        My.Settings.Save()
-'    End Sub
-'
-'    Private Sub chkShowErrors_CheckedChanged(sender As Object, e As EventArgs) Handles chkShowErrors.CheckedChanged, chkShowErrors.Click
-'        My.Settings.ShowErrors = chkShowErrors.Checked
-'        My.Settings.Save()
-'    End Sub
-'
-'    Private Sub btnBrowseLog_Click(sender As Object, e As EventArgs) Handles btnBrowseLog.Click
-'        If SaveLogFileDialog.InitialDirectory = "" Then SaveLogFileDialog.InitialDirectory = Dir
-'        SaveLogFileDialog.ShowDialog()
-'        txtLogPath.Text = SaveLogFileDialog.FileName
-'        If File.Exists(txtLogPath.Text) Then MsgBox("File already exists! If you set the logfile to an already existing one, the log will be appended to the end of the file when the Git operation runs.", _
-'                                                    MsgBoxStyle.Information, "File already exists")
-'    End Sub
-'
-'    ' actual code that runs the shells
-'    Sub ShellWorker_DoWork(sender As Object, e As System.ComponentModel.DoWorkEventArgs) Handles ShellWorker.DoWork
-'        Try
-'            btnGitPullAll.Enabled = False
-'            btnGitPushAll.Enabled = False
-'            btnGitPullSelected.Enabled = False
-'            btnGitPushSelected.Enabled = False
-'            btnGitPullNotSelected.Enabled = False
-'            btnGitPushNotSelected.Enabled = False
-'            btnCD.Enabled = False
-'            btnCancel.Enabled = True
-'            timerAutoInsert.Start()
-'
-'            If chkDontShow.Checked = False Then Me.TopMost = True
-'            progressBar.Maximum = lstRepos.Items.Count
-'
-'            Select Case count
-'                Case "all"
-'                    For i = 1 To lstRepos.Items.Count
-'                        If chkGitRepoOnly.Checked = True Then
-'                            If File.Exists(Dir & lstRepos.Items.Item(i - 1) & "\.git\config") = False Then
-'                                Continue For
-'                            End If
-'                        End If
-'                        notInserted = True
-'                        Shell("GitUpdater.bat " & Dir & lstRepos.Items.Item(i - 1) & " " & GitCommand & " " & chkRepeat.Checked & " " & chkDontClose.Checked & " " & chkLog.Checked & " " & txtLogPath.Text, CmdStyle, True, Wait)
-'                        progressBar.Value = i
-'                        'TaskbarInfoUpdate(TaskbarItemProgressState.Paused, i / lstRepos.Items.Count)
-'                    Next
-'                    'TaskbarInfoUpdate(TaskbarItemProgressState.Normal)
-'                Case "selected"
-'                    If lstRepos.SelectedIndex = -1 Then
-'                        MsgBox("No item selected", MsgBoxStyle.Critical)
-'                    Else
-'                        progressBar.Maximum = 2
-'                        progressBar.Value = 1
-'                        'TaskbarInfoUpdate(TaskbarItemProgressState.Indeterminate, 0.5)
-'                        notInserted = True
-'                        Shell("GitUpdater.bat " & Dir & lstRepos.SelectedItem & " " & GitCommand & " " & chkRepeat.Checked & " " & chkDontClose.Checked & " " & chkLog.Checked & " " & txtLogPath.Text, vbNormalFocus, True, Wait)
-'                        progressBar.Value = progressBar.Maximum
-'                        'TaskbarInfoUpdate(TaskbarItemProgressState.Normal, 1)
-'                    End If
-'                Case "notselected"
-'                    If lstRepos.SelectedIndex = -1 Then
-'                        MsgBox("No item selected", MsgBoxStyle.Critical)
-'                    Else
-'                        For i = 1 To lstRepos.Items.Count
-'                            If i - 1 <> lstRepos.SelectedIndex Then
-'                                If chkGitRepoOnly.Checked = True Then
-'                                    If File.Exists(Dir & lstRepos.Items.Item(i - 1) & "\.git\config") = False Then
-'                                        Continue For
-'                                    End If
-'                                End If
-'                                notInserted = True
-'                                Shell("GitUpdater.bat " & Dir & lstRepos.Items.Item(i - 1) & " " & GitCommand & " " & chkRepeat.Checked & " " & chkDontClose.Checked & " " & chkLog.Checked & " " & txtLogPath.Text, CmdStyle, True, Wait)
-'                                progressBar.Value = i
-'                                'TaskbarInfoUpdate(TaskbarItemProgressState.Normal, i / lstRepos.Items.Count)
-'                            End If
-'                        Next
-'                        'TaskbarInfoUpdate(TaskbarItemProgressState.Normal)
-'                    End If
-'                Case "cmdselected"
-'                    If cmdRepo = "" Then
-'                        MsgBox("No repo passed from command line", MsgBoxStyle.Critical)
-'                    Else
-'                        'TaskbarInfoUpdate(TaskbarItemProgressState.Indeterminate, 0.5)
-'                        progressBar.Maximum = 2
-'                        progressBar.Value = 1
-'                        notInserted = True
-'                        Shell("GitUpdater.bat " & Dir & cmdRepo & " " & GitCommand & " " & chkRepeat.Checked & " " & chkDontClose.Checked & " " & chkLog.Checked & " " & txtLogPath.Text, vbNormalFocus, True, Wait)
-'                        progressBar.Value = progressBar.Maximum
-'                        'TaskbarInfoUpdate(TaskbarItemProgressState.Normal, 1)
-'                    End If
-'                Case "cmdnotselected"
-'                    If cmdRepo = "" Then
-'                        MsgBox("No repo passed from command line", MsgBoxStyle.Critical)
-'                    Else
-'                        For i = 1 To lstRepos.Items.Count
-'                            If lstRepos.Items.Item(i - 1) <> cmdRepo Then
-'                                If chkGitRepoOnly.Checked = True Then
-'                                    If File.Exists(Dir & lstRepos.Items.Item(i - 1) & "\.git\config") = False Then
-'                                        Continue For
-'                                    End If
-'                                End If
-'                                notInserted = True
-'                                Shell("GitUpdater.bat " & Dir & lstRepos.Items.Item(i - 1) & " " & GitCommand & " " & chkRepeat.Checked & " " & chkDontClose.Checked & " " & chkLog.Checked & " " & txtLogPath.Text, CmdStyle, True, Wait)
-'                                progressBar.Value = i
-'                                'TaskbarInfoUpdate(TaskbarItemProgressState.Paused, i / lstRepos.Items.Count)
-'                            End If
-'                        Next
-'                        'TaskbarInfoUpdate(TaskbarItemProgressState.Normal)
-'                    End If
-'            End Select
-'
-'            If chkOpenLog.Checked = True Then
-'                Try
-'                    Process.Start(txtLogPath.Text)
-'                Catch ex As Exception
-'                    MsgBox("Failed to open log!", MsgBoxStyle.Critical)
-'                End Try
-'            End If
-'
-'            If ExitWhenDone = True Then
-'                Application.Exit()
-'            End If
-'            Me.TopMost = False
-'
-'            btnGitPullAll.Enabled = True
-'            btnGitPushAll.Enabled = True
-'            btnGitPullSelected.Enabled = True
-'            btnGitPushSelected.Enabled = True
-'            btnGitPullNotSelected.Enabled = True
-'            btnGitPushNotSelected.Enabled = True
-'            btnCD.Enabled = True
-'            btnCancel.Enabled = False
-'        Catch ex As Exception
-'            MsgBox("There was an error executing the Git operation! The error was:" & vbNewLine & ex.ToString, MsgBoxStyle.Critical)
-'            btnGitPullAll.Enabled = True
-'            btnGitPushAll.Enabled = True
-'            btnGitPullSelected.Enabled = True
-'            btnGitPushSelected.Enabled = True
-'            btnGitPullNotSelected.Enabled = True
-'            btnGitPushNotSelected.Enabled = True
-'            btnCD.Enabled = True
-'            btnCancel.Enabled = False
-'        End Try
-'    End Sub
-'
-'    ' starting and stopping the thread
-'
-'    Sub btnCancel_Click(sender As Object, e As EventArgs) Handles btnCancel.Click
-'        If ShellWorker.IsBusy = True Then
-'            If MsgBox("Are you sure you want to cancel operation? This requires restarting GitUpdater." & vbNewLine & vbNewLine & "This will not close the currently active CMD window. To do so, please click on the window and press 'Ctrl' + 'C', then 'Y', then 'Enter'.", MsgBoxStyle.Question + MsgBoxStyle.YesNo, "Confirmation") = vbNo Then Exit Sub
-'            Application.Restart()
-'        Else
-'            MsgBox("No git operation is currently in progress!", MsgBoxStyle.Information)
-'        End If
-'
-'    End Sub
-'
-'    Sub btnGitPullAll_Click(sender As Object, e As EventArgs) Handles btnGitPullAll.Click
-'        count = "all"
-'        GitCommand = "pull"
-'        If ShellWorker.IsBusy = False Then
-'            ShellWorker.RunWorkerAsync()
-'        Else
-'            MsgBox("A git operation is currently in progress!", MsgBoxStyle.Exclamation, "Operation in progress")
-'        End If
-'    End Sub
-'
-'    Sub btnGitPushAll_Click(sender As Object, e As EventArgs) Handles btnGitPushAll.Click
-'        count = "all"
-'        GitCommand = "push"
-'        If ShellWorker.IsBusy = False Then
-'            ShellWorker.RunWorkerAsync()
-'        Else
-'            MsgBox("A git operation is currently in progress!", MsgBoxStyle.Exclamation, "Operation in progress")
-'        End If
-'    End Sub
-'
-'    Sub btnGitPullSelected_Click(sender As Object, e As EventArgs) Handles btnGitPullSelected.Click, ContextMenuStripReposGitPullThis.Click
-'        If lstRepos.SelectedIndex = -1 Then
-'            MsgBox("No item selected", MsgBoxStyle.Critical)
-'        Else
-'            count = "selected"
-'            GitCommand = "pull"
-'            If ShellWorker.IsBusy = False Then
-'                ShellWorker.RunWorkerAsync()
-'            Else
-'                MsgBox("A git operation is currently in progress!", MsgBoxStyle.Exclamation, "Operation in progress")
-'            End If
-'        End If
-'    End Sub
-'
-'    Sub btnGitPushSelected_Click(sender As Object, e As EventArgs) Handles btnGitPushSelected.Click, ContextMenuStripReposGitPushThis.Click
-'        If lstRepos.SelectedIndex = -1 Then
-'            MsgBox("No item selected", MsgBoxStyle.Critical)
-'        Else
-'            count = "selected"
-'            GitCommand = "push"
-'            If ShellWorker.IsBusy = False Then
-'                ShellWorker.RunWorkerAsync()
-'            Else
-'                MsgBox("A git operation is currently in progress!", MsgBoxStyle.Exclamation, "Operation in progress")
-'            End If
-'        End If
-'    End Sub
-'
-'    Sub btnGitPullNotSelected_Click(sender As Object, e As EventArgs) Handles btnGitPullNotSelected.Click
-'        If lstRepos.SelectedIndex = -1 Then
-'            MsgBox("No item selected", MsgBoxStyle.Critical)
-'        Else
-'            count = "notselected"
-'            GitCommand = "pull"
-'            If ShellWorker.IsBusy = False Then
-'                ShellWorker.RunWorkerAsync()
-'            Else
-'                MsgBox("A git operation is currently in progress!", MsgBoxStyle.Exclamation, "Operation in progress")
-'            End If
-'        End If
-'    End Sub
-'
-'    Sub btnGitPushNotSelected_Click(sender As Object, e As EventArgs) Handles btnGitPushNotSelected.Click
-'        If lstRepos.SelectedIndex = -1 Then
-'            MsgBox("No item selected", MsgBoxStyle.Critical)
-'        Else
-'            count = "notselected"
-'            GitCommand = "push"
-'            If ShellWorker.IsBusy = False Then
-'                ShellWorker.RunWorkerAsync()
-'            Else
-'                MsgBox("A git operation is currently in progress!", MsgBoxStyle.Information, "Operation in progress")
-'            End If
-'        End If
-'    End Sub
-'
-'    Sub btnCloseCmd_Click(sender As Object, e As EventArgs) Handles btnCloseCmd.Click
-'        If ShellWorker.IsBusy = False Then
-'            If MsgBox("No git operation from this program is in progress, are you sure you want to insert commands to close a CMD window?", MsgBoxStyle.Question + MsgBoxStyle.YesNo, "Confirmation") = vbNo Then Exit Sub
-'        End If
-'        Me.WindowState = FormWindowState.Minimized
-'        System.Threading.Thread.Sleep(500)
-'        SendKeys.SendWait("^C")
-'        System.Threading.Thread.Sleep(500)
-'        SendKeys.SendWait("Y")
-'        SendKeys.SendWait("~")
-'        Me.WindowState = FormWindowState.Normal
-'        Me.BringToFront()
-'    End Sub
-'
-'    ' credentials-related stuff
-'
-'    Sub btnSave_Click(sender As Object, e As EventArgs) Handles btnSave.Click
-'        My.Settings.Username = txtUsername.Text
-'        My.Settings.Password = txtPassword.Text
-'        My.Settings.Save()
-'        MsgBox("Succesfully Saved!", MsgBoxStyle.Information, "Saved!")
-'    End Sub
-'
-'    Sub btnInsertCredentials_Click() Handles btnInsertCredentials.Click
-'        Me.WindowState = FormWindowState.Minimized
-'        System.Threading.Thread.Sleep(500)
-'        SendKeys.SendWait(txtUsername.Text & "~")
-'        SendKeys.SendWait(txtPassword.Text & "~")
-'        Me.WindowState = FormWindowState.Normal
-'        Me.BringToFront()
-'    End Sub
-'
-'    Sub TimerKeyChecker_Tick(sender As Object, e As EventArgs) Handles timerKeyChecker.Tick
-'        If btnHotkey.Text = "Hotkey Enabled!" Then
-'            btnHotkey.Text = "Disable Hotkey (Alt)"
-'            timerKeyChecker.Interval = 100
-'        ElseIf btnHotkey.Text = "Hotkey Disabled!" Then
-'            btnHotkey.Text = "Enable Hotkey (Alt)"
-'            timerKeyChecker.Stop()
-'        End If
-'        If My.Computer.Keyboard.AltKeyDown = True Then
-'            SendKeys.Send(txtUsername.Text & "~")
-'            SendKeys.Send(txtPassword.Text & "~")
-'            ' See http://msdn.microsoft.com/en-us/library/system.windows.forms.sendkeys.send(v=vs.110).aspx
-'        End If
-'    End Sub
-'
-'    Private Sub timerAutoInsert_Tick(sender As Object, e As EventArgs) Handles timerAutoInsert.Tick
-'        If chkAutoInsert.Checked = True Then
-'            If GitCommand = "push" Then
-'                If chkDontShow.Checked = False Then
-'                    If notInserted Then
-'                        SendKeys.Send(txtUsername.Text & "~" & txtPassword.Text & "~")
-'                        notInserted = False
-'                    End If
-'                End If
-'            End If
-'        End If
-'    End Sub
-'
-'    Sub btnHotkey_Click(sender As Object, e As EventArgs) Handles btnHotkey.Click
-'        If btnHotkey.Text = "Enable Hotkey (Alt)" Then
-'            btnHotkey.Text = "Hotkey Enabled!"
-'            timerKeyChecker.Interval = 1000
-'            timerKeyChecker.Start()
-'        ElseIf btnHotkey.Text = "Disable Hotkey (Alt)" Then
-'            btnHotkey.Text = "Hotkey Disabled!"
-'            timerKeyChecker.Interval = 1000
-'        End If
-'    End Sub
-'
-'    Private Sub btnShowPass_MouseDown(sender As Object, e As MouseEventArgs) Handles btnShowPass.MouseDown
-'        txtPassword.PasswordChar = ""
-'    End Sub
-'
-'    Private Sub btnShowPass_MouseUp(sender As Object, e As MouseEventArgs) Handles btnShowPass.MouseUp
-'        txtPassword.PasswordChar = "●"
-'    End Sub
-'
-'    ' updating the interface
-'
-'    Sub LstRepos_MouseDown(sender As Object, e As MouseEventArgs) Handles lstRepos.MouseDown
-'        If lstRepos.SelectedIndex <> -1 Then
-'            If lstRepos.SelectedItem.ToString.EndsWith(".wiki") Then
-'                ContextMenuStripReposOpenInExplorer.Text = "Open Wiki in Windows Explorer"
-'                ContextMenuStripReposOpenInCMD.Text = "Open Wiki in CMD"
-'                ContextMenuStripReposOpenInPS.Text = "Open Wiki in Windows PowerShell"
-'                ContextMenuStripReposOpenInBash.Text = "Open Wiki in Git Bash"
-'                ContextMenuStripReposOpenInGitHub.Text = "Open Wiki in GitHub for Windows"
-'                ContextMenuStripReposSeparator1.Visible = True
-'                ContextMenuStripReposOpenReadme.Visible = True
-'                ContextMenuStripReposOpenReadme.Text = "Open Wiki home.md"
-'                ContextMenuStripReposOpenSLN.Visible = False
-'                ContextMenuStripReposOpenURL.Text = "Open Wiki URL"
-'                ContextMenuStripReposSeparator2.Visible = True
-'                ContextMenuStripReposCopyRepoName.Visible = True
-'                ContextMenuStripReposCopyRepoName.Text = "Copy Wiki Name"
-'                ContextMenuStripReposCopyRepoPath.Visible = True
-'                ContextMenuStripReposCopyRepoPath.Text = "Copy Wiki Path"
-'                ContextMenuStripReposSeparator3.Visible = True
-'                ContextMenuStripReposRemoveEntry.Visible = True
-'                ContextMenuStripReposCDHere.Visible = True
-'                ContextMenuStripReposCDHere.Text = "CD Here..."
-'                ContextMenuStripReposSeparator4.Visible = True
-'                ContextMenuStripReposGitPullThis.Visible = True
-'                ContextMenuStripReposGitPushThis.Visible = True
-'            ElseIf lstRepos.SelectedItem.ToString.EndsWith(".github.io") Or lstRepos.SelectedItem.ToString.EndsWith(".github.com") Then
-'                ContextMenuStripReposOpenInExplorer.Text = "Open Site Folder in Windows Explorer"
-'                ContextMenuStripReposOpenInCMD.Text = "Open Site Folder in CMD"
-'                ContextMenuStripReposOpenInPS.Text = "Open Site Folder in Windows PowerShell"
-'                ContextMenuStripReposOpenInBash.Text = "Open Site Folder in Git Bash"
-'                ContextMenuStripReposOpenInGitHub.Text = "Open Site in GitHub for Windows"
-'                ContextMenuStripReposSeparator1.Visible = True
-'                ContextMenuStripReposOpenReadme.Visible = True
-'                ContextMenuStripReposOpenReadme.Text = "Open Site index.html"
-'                ContextMenuStripReposOpenSLN.Visible = False
-'                ContextMenuStripReposOpenURL.Text = "Open Site GitHub URL"
-'                ContextMenuStripReposSeparator2.Visible = True
-'                ContextMenuStripReposCopyRepoName.Visible = True
-'                ContextMenuStripReposCopyRepoName.Text = "Copy Site Name"
-'                ContextMenuStripReposCopyRepoPath.Visible = True
-'                ContextMenuStripReposCopyRepoPath.Text = "Copy Site Path"
-'                ContextMenuStripReposSeparator3.Visible = True
-'                ContextMenuStripReposRemoveEntry.Visible = True
-'                ContextMenuStripReposCDHere.Visible = True
-'                ContextMenuStripReposCDHere.Text = "CD Here..."
-'                ContextMenuStripReposSeparator4.Visible = True
-'                ContextMenuStripReposGitPullThis.Visible = True
-'                ContextMenuStripReposGitPushThis.Visible = True
-'            Else
-'                ContextMenuStripReposOpenInExplorer.Text = "Open Repo in Windows Explorer"
-'                ContextMenuStripReposOpenInCMD.Text = "Open Repo in CMD"
-'                ContextMenuStripReposOpenInPS.Text = "Open Repo in Windows PowerShell"
-'                ContextMenuStripReposOpenInBash.Text = "Open Repo in Git Bash"
-'                ContextMenuStripReposOpenInGitHub.Text = "Open Repo in GitHub for Windows"
-'                ContextMenuStripReposSeparator1.Visible = True
-'                ContextMenuStripReposOpenReadme.Visible = True
-'                ContextMenuStripReposOpenReadme.Text = "Open Repo Readme"
-'                ContextMenuStripReposOpenSLN.Visible = True
-'                ContextMenuStripReposOpenSLN.Text = "Open Repo SLN"
-'                ContextMenuStripReposOpenURL.Text = "Open Repo URL"
-'                ContextMenuStripReposSeparator2.Visible = True
-'                ContextMenuStripReposCopyRepoName.Visible = True
-'                ContextMenuStripReposCopyRepoName.Text = "Copy Repo Name"
-'                ContextMenuStripReposCopyRepoPath.Visible = True
-'                ContextMenuStripReposCopyRepoPath.Text = "Copy Repo Path"
-'                ContextMenuStripReposSeparator3.Visible = True
-'                ContextMenuStripReposRemoveEntry.Visible = True
-'                ContextMenuStripReposCDHere.Visible = True
-'                ContextMenuStripReposCDHere.Text = "CD Here..."
-'                ContextMenuStripReposSeparator4.Visible = True
-'                ContextMenuStripReposGitPullThis.Visible = True
-'                ContextMenuStripReposGitPushThis.Visible = True
-'            End If
-'        Else
-'            ContextMenuStripReposOpenInExplorer.Text = "Open Folder in Windows Explorer"
-'            ContextMenuStripReposOpenInCMD.Text = "Open Folder in CMD"
-'            ContextMenuStripReposOpenInPS.Text = "Open Folder in Windows PowerShell"
-'            ContextMenuStripReposOpenInBash.Text = "Open Folder in Git Bash"
-'            ContextMenuStripReposOpenInGitHub.Text = "Open Folder in GitHub for Windows"
-'            ContextMenuStripReposSeparator1.Visible = True
-'            ContextMenuStripReposOpenReadme.Visible = False
-'            ContextMenuStripReposOpenSLN.Visible = False
-'            ContextMenuStripReposOpenURL.Text = "Open Folder URL"
-'            ContextMenuStripReposSeparator2.Visible = False
-'            ContextMenuStripReposCopyRepoName.Visible = False
-'            ContextMenuStripReposCopyRepoPath.Visible = True
-'            ContextMenuStripReposCopyRepoPath.Text = "Copy Folder Path"
-'            ContextMenuStripReposSeparator3.Visible = False
-'            ContextMenuStripReposRemoveEntry.Visible = False
-'            ContextMenuStripReposCDHere.Visible = True
-'            ContextMenuStripReposCDHere.Text = "Up a level ↩"
-'            ContextMenuStripReposSeparator4.Visible = True
-'            ContextMenuStripReposGitPullThis.Visible = True
-'            ContextMenuStripReposGitPushThis.Visible = True
-'        End If
-'    End Sub
+    End Sub
+
+    Sub lstContents_DoubleClick(sender As Object, e As EventArgs) Handles lstContents.DoubleClick
+        If lstContents.SelectedIndex <> -1 Then
+            WorkingDir = WorkingDir & lstContents.SelectedItem & "\"
+            My.Settings.LastDir = WorkingDir
+            RebuildRepoList()
+        Else
+            Try
+                WorkingDir = WorkingDir.Remove(WorkingDir.Length - 1)
+                WorkingDir = WorkingDir.Remove(WorkingDir.LastIndexOf("\"))
+                WorkingDir = WorkingDir & "\"
+                My.Settings.LastDir = WorkingDir
+                RebuildRepoList()
+            Catch ex As System.ArgumentOutOfRangeException
+                If MsgBox("Cannot go higher than the root of a drive! Please use the change directory button to change drives." & vbNewLine & vbNewLine & "Open CD dialog now?", MsgBoxStyle.YesNo + MsgBoxStyle.Critical, "Trying to go up from a drive root") = vbYes Then
+                    btnCD_Click(Nothing, Nothing)
+                End If
+            End Try
+        End If
+    End Sub
+    
+    Sub lstContents_MouseDown(sender As Object, e As MouseEventArgs) Handles lstContents.MouseDown
+        If lstContents.SelectedIndex <> -1 Then
+            If lstContents.SelectedItem.ToString.EndsWith(".wiki") Then
+                ContextMenuStripReposOpenInExplorer.Text = "Open Wiki in Windows Explorer"
+                ContextMenuStripReposOpenInCMD.Text = "Open Wiki in CMD"
+                ContextMenuStripReposOpenInPS.Text = "Open Wiki in Windows PowerShell"
+                ContextMenuStripReposOpenInBash.Text = "Open Wiki in Git Bash"
+                ContextMenuStripReposOpenInGitHub.Text = "Open Wiki in GitHub for Windows"
+                ContextMenuStripReposSeparator1.Visible = True
+                ContextMenuStripReposOpenReadme.Visible = True
+                ContextMenuStripReposOpenReadme.Text = "Open Wiki home.md"
+                ContextMenuStripReposOpenSLN.Visible = False
+                ContextMenuStripReposOpenURL.Text = "Open Wiki URL"
+                ContextMenuStripReposSeparator2.Visible = True
+                ContextMenuStripReposCopyRepoName.Visible = True
+                ContextMenuStripReposCopyRepoName.Text = "Copy Wiki Name"
+                ContextMenuStripReposCopyRepoPath.Visible = True
+                ContextMenuStripReposCopyRepoPath.Text = "Copy Wiki Path"
+                ContextMenuStripReposSeparator3.Visible = True
+                ContextMenuStripReposRemoveEntry.Visible = True
+                ContextMenuStripReposCDHere.Visible = True
+                ContextMenuStripReposCDHere.Text = "CD Here..."
+                ContextMenuStripReposSeparator4.Visible = True
+                ContextMenuStripReposGitPullThis.Visible = True
+                ContextMenuStripReposGitPushThis.Visible = True
+            ElseIf lstContents.SelectedItem.ToString.EndsWith(".github.io") Or lstContents.SelectedItem.ToString.EndsWith(".github.com") Then
+                ContextMenuStripReposOpenInExplorer.Text = "Open Site Folder in Windows Explorer"
+                ContextMenuStripReposOpenInCMD.Text = "Open Site Folder in CMD"
+                ContextMenuStripReposOpenInPS.Text = "Open Site Folder in Windows PowerShell"
+                ContextMenuStripReposOpenInBash.Text = "Open Site Folder in Git Bash"
+                ContextMenuStripReposOpenInGitHub.Text = "Open Site in GitHub for Windows"
+                ContextMenuStripReposSeparator1.Visible = True
+                ContextMenuStripReposOpenReadme.Visible = True
+                ContextMenuStripReposOpenReadme.Text = "Open Site index.html"
+                ContextMenuStripReposOpenSLN.Visible = False
+                ContextMenuStripReposOpenURL.Text = "Open Site GitHub URL"
+                ContextMenuStripReposSeparator2.Visible = True
+                ContextMenuStripReposCopyRepoName.Visible = True
+                ContextMenuStripReposCopyRepoName.Text = "Copy Site Name"
+                ContextMenuStripReposCopyRepoPath.Visible = True
+                ContextMenuStripReposCopyRepoPath.Text = "Copy Site Path"
+                ContextMenuStripReposSeparator3.Visible = True
+                ContextMenuStripReposRemoveEntry.Visible = True
+                ContextMenuStripReposCDHere.Visible = True
+                ContextMenuStripReposCDHere.Text = "CD Here..."
+                ContextMenuStripReposSeparator4.Visible = True
+                ContextMenuStripReposGitPullThis.Visible = True
+                ContextMenuStripReposGitPushThis.Visible = True
+            Else
+                ContextMenuStripReposOpenInExplorer.Text = "Open Repo in Windows Explorer"
+                ContextMenuStripReposOpenInCMD.Text = "Open Repo in CMD"
+                ContextMenuStripReposOpenInPS.Text = "Open Repo in Windows PowerShell"
+                ContextMenuStripReposOpenInBash.Text = "Open Repo in Git Bash"
+                ContextMenuStripReposOpenInGitHub.Text = "Open Repo in GitHub for Windows"
+                ContextMenuStripReposSeparator1.Visible = True
+                ContextMenuStripReposOpenReadme.Visible = True
+                ContextMenuStripReposOpenReadme.Text = "Open Repo Readme"
+                ContextMenuStripReposOpenSLN.Visible = True
+                ContextMenuStripReposOpenSLN.Text = "Open Repo SLN"
+                ContextMenuStripReposOpenURL.Text = "Open Repo URL"
+                ContextMenuStripReposSeparator2.Visible = True
+                ContextMenuStripReposCopyRepoName.Visible = True
+                ContextMenuStripReposCopyRepoName.Text = "Copy Repo Name"
+                ContextMenuStripReposCopyRepoPath.Visible = True
+                ContextMenuStripReposCopyRepoPath.Text = "Copy Repo Path"
+                ContextMenuStripReposSeparator3.Visible = True
+                ContextMenuStripReposRemoveEntry.Visible = True
+                ContextMenuStripReposCDHere.Visible = True
+                ContextMenuStripReposCDHere.Text = "CD Here..."
+                ContextMenuStripReposSeparator4.Visible = True
+                ContextMenuStripReposGitPullThis.Visible = True
+                ContextMenuStripReposGitPushThis.Visible = True
+            End If
+        Else
+            ContextMenuStripReposOpenInExplorer.Text = "Open Folder in Windows Explorer"
+            ContextMenuStripReposOpenInCMD.Text = "Open Folder in CMD"
+            ContextMenuStripReposOpenInPS.Text = "Open Folder in Windows PowerShell"
+            ContextMenuStripReposOpenInBash.Text = "Open Folder in Git Bash"
+            ContextMenuStripReposOpenInGitHub.Text = "Open Folder in GitHub for Windows"
+            ContextMenuStripReposSeparator1.Visible = True
+            ContextMenuStripReposOpenReadme.Visible = False
+            ContextMenuStripReposOpenSLN.Visible = False
+            ContextMenuStripReposOpenURL.Text = "Open Folder URL"
+            ContextMenuStripReposSeparator2.Visible = False
+            ContextMenuStripReposCopyRepoName.Visible = False
+            ContextMenuStripReposCopyRepoPath.Visible = True
+            ContextMenuStripReposCopyRepoPath.Text = "Copy Folder Path"
+            ContextMenuStripReposSeparator3.Visible = False
+            ContextMenuStripReposRemoveEntry.Visible = False
+            ContextMenuStripReposCDHere.Visible = True
+            ContextMenuStripReposCDHere.Text = "Up a level ↩"
+            ContextMenuStripReposSeparator4.Visible = True
+            ContextMenuStripReposGitPullThis.Visible = True
+            ContextMenuStripReposGitPushThis.Visible = True
+        End If
+    End Sub
 End Class
