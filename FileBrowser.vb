@@ -301,7 +301,7 @@
 '        '	url = https://github.com/addyosmani/github-watchers-button.git
 '        For Each line In File.ReadLines(Dir & lstRepos.SelectedItem & "\.git\config")
 '            If LineIsOrigin Then
-'                cmdRepo = line.Remove(0, line.IndexOf("https://")) ' cmdRepo just because it's a string that would be unused by this point
+'                cmdRepo = line.Substring(line.IndexOf("https://")) ' cmdRepo just because it's a string that would be unused by this point
 '                If cmdRepo.EndsWith(".git") Then cmdRepo = cmdRepo.Remove(cmdRepo.Length - 4)
 '                Try
 '                    Process.Start(cmdRepo)
@@ -316,7 +316,7 @@
 '
 '            If LineIsUpstream Then
 '                If MsgBox("Fork detected, open fork origin too?", MsgBoxStyle.YesNo) = MsgBoxResult.Yes Then
-'                    cmdRepo = line.Remove(0, line.IndexOf("https://"))
+'                    cmdRepo = line.Substring(line.IndexOf("https://"))
 '                    If cmdRepo.EndsWith(".git") Then cmdRepo = cmdRepo.Remove(cmdRepo.Length - 4)
 '                    Try
 '                        Process.Start(cmdRepo)
