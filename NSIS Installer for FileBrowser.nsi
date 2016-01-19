@@ -5,6 +5,7 @@
 ;Icon "Resources\FileBrowser.ico"
 Caption "FileBrowser Installer"
 Name "FileBrowser"
+XPStyle on
 AutoCloseWindow true
 ShowInstDetails show
 
@@ -49,10 +50,6 @@ SectionEnd
 Section "FileBrowser Quick Launch Shortcut"
   CreateShortCut "$QUICKLAUNCH\FileBrowser.lnk" "$INSTDIR\FileBrowser.exe" "" "$INSTDIR\FileBrowser.exe" "" "" "" "FileBrowser"
 SectionEnd
-
-;Section "More apps from DeavmiOSS"
-; this should have sub options for available apps, that are downloaded
-;SectionEnd
 
 ; Functions
 
