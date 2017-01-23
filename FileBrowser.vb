@@ -1,4 +1,4 @@
-﻿Public Class FileBrowser
+Public Class FileBrowser
     Dim WorkingDir As String = Environment.GetEnvironmentVariable("USERPROFILE")
 '    Dim cmdRepo As String = ""
 '    Dim count, GitCommand As String  ' because the Worker doesn't support direct sub calling
