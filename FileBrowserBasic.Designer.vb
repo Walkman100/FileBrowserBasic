@@ -1,5 +1,5 @@
 <Global.Microsoft.VisualBasic.CompilerServices.DesignerGenerated()> _
-Partial Class FileBrowser
+Partial Class FileBrowserBasic
     Inherits System.Windows.Forms.Form
 
     'Form overrides dispose to clean up the component list.
@@ -23,7 +23,7 @@ Partial Class FileBrowser
     <System.Diagnostics.DebuggerStepThrough()> _
     Private Sub InitializeComponent()
         Me.components = New System.ComponentModel.Container()
-        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FileBrowser))
+        Dim resources As System.ComponentModel.ComponentResourceManager = New System.ComponentModel.ComponentResourceManager(GetType(FileBrowserBasic))
         Me.ContextMenuStripRepos = New System.Windows.Forms.ContextMenuStrip(Me.components)
         Me.ContextMenuStripReposOpenInExplorer = New System.Windows.Forms.ToolStripMenuItem()
         Me.ContextMenuStripReposOpenInCMD = New System.Windows.Forms.ToolStripMenuItem()
@@ -239,9 +239,9 @@ Partial Class FileBrowser
         Me.Controls.Add(Me.menuStrip)
         Me.HelpButton = true
         Me.MainMenuStrip = Me.menuStrip
-        Me.Name = "FileBrowser"
+        Me.Name = "FileBrowserBasic"
         Me.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent
-        Me.Text = "FileBrowser"
+        Me.Text = "FileBrowserBasic"
         Me.WindowState = System.Windows.Forms.FormWindowState.Maximized
         Me.ContextMenuStripRepos.ResumeLayout(false)
         Me.menuStrip.ResumeLayout(false)

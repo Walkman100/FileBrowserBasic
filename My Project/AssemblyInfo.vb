@@ -8,10 +8,10 @@ Imports System.Runtime.InteropServices
 
 ' Review the values of the assembly attributes
 
-<Assembly: AssemblyTitle("File Browser")> 
-<Assembly: AssemblyDescription("A simple file browser coded in VB.Net")> 
+<Assembly: AssemblyTitle("File Browser (Basic)")> 
+<Assembly: AssemblyDescription("A very simple file browser coded in VB.Net, that is just a list")> 
 <Assembly: AssemblyCompany("WalkmanOSS")> 
-<Assembly: AssemblyProduct("FileBrowser")> 
+<Assembly: AssemblyProduct("FileBrowserBasic")> 
 <Assembly: AssemblyCopyright("FOSS from Walkman 2015")> 
 <Assembly: AssemblyTrademark("")> 
 

@@ -1,8 +1,8 @@
-; FileBrowser Installer NSIS Script
+; FileBrowserBasic Installer NSIS Script
 ; get NSIS at http://nsis.sourceforge.net/Download
 ; As a program that all Power PC users should have, Notepad++ is recommended to edit this file
 
-!define ProgramName "FileBrowser"
+!define ProgramName "FileBrowserBasic"
 ;Icon "Resources\${ProgramName}.ico"
 
 Name "${ProgramName}"

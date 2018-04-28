@@ -1,4 +1,4 @@
-Public Class FileBrowser
+﻿Public Class FileBrowserBasic
     Dim WorkingDir As String = Environment.GetEnvironmentVariable("USERPROFILE")
 '    Dim cmdRepo As String = ""
 '    Dim count, GitCommand As String  ' because the Worker doesn't support direct sub calling
@@ -9,7 +9,7 @@ Public Class FileBrowser
 '    Dim CmdStyle As AppWinStyle  ' window location of CMD
 '    Dim Wait As Integer  ' Wait until cmd closes
 
-    Sub FileBrowser(sender As Object, e As EventArgs) Handles MyBase.Load
+    Sub FileBrowserBasic(sender As Object, e As EventArgs) Handles MyBase.Load
 '        If Not File.Exists("GitUpdater.bat") Then
 '            Try
 '                My.Computer.Network.DownloadFile("https://raw.githubusercontent.com/Walkman100/GitUpdater/master/GitUpdater.bat", "GitUpdater.bat")

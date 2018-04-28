@@ -1,1 +1,1 @@
-..\WinCompile\compile FileBrowser
+..\WinCompile\compile FileBrowserBasic
